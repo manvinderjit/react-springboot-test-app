@@ -1,8 +1,5 @@
 import './App.css'
 import { useEffect, useState, type JSX } from "react";
-
-const apiUrl = import.meta.env.VITE_API_BASE_URL;
-
 interface Movie {
   id: number;
   title: string;
@@ -27,7 +24,7 @@ function App(): JSX.Element {
   };
 
   useEffect(() => {
-    fetch(`${apiUrl}/api/movies`)
+    fetch(`/api/movies`)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch movies");
         return res.json();
@@ -39,7 +36,7 @@ function App(): JSX.Element {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    fetch(`${apiUrl}/api/movies`, {
+    fetch(`/api/movies`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
