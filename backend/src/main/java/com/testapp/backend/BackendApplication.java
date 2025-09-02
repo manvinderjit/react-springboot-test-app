@@ -28,7 +28,7 @@ public class BackendApplication {
 	        @Override
 	        public void addCorsMappings(CorsRegistry registry) {
 	            registry.addMapping("/**")
-	                    .allowedOrigins('http://three-tier-infra-app-ws-alb-75506392.us-east-2.elb.amazonaws.com')
+	                    .allowedOrigins("http://three-tier-infra-app-ws-alb-75506392.us-east-2.elb.amazonaws.com")
 	                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 	                    .allowedHeaders("*")
 	                    .allowCredentials(false);
