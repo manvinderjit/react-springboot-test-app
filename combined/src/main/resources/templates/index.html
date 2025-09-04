@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Movie Library</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-900 text-white">
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <h1 class="text-3xl font-bold text-center mb-8 text-gray-200">
+        Manvinder's Movie Library
+      </h1>
+
+      <form
+        id="movie-form"
+        class="mb-10 max-w-md mx-auto bg-white text-black p-6 rounded shadow"
+      >
+        <h2 class="text-2xl text-center font-semibold mb-4">Add a New Movie</h2>
+
+        <input
+          type="text"
+          id="title"
+          name="title"
+          placeholder="Title"
+          class="w-full mb-3 px-4 py-2 border rounded"
+          required
+        />
+
+        <input
+          type="text"
+          id="director"
+          name="director"
+          placeholder="Director"
+          class="w-full mb-3 px-4 py-2 border rounded"
+          required
+        />
+
+        <input
+          type="number"
+          id="year"
+          name="year"
+          placeholder="Year"
+          class="w-full mb-4 px-4 py-2 border rounded"
+          required
+        />
+
+        <button
+          type="submit"
+          class="bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 w-full"
+        >
+          Add Movie
+        </button>
+      </form>
+
+      <h2 class="text-2xl text-center font-semibold mb-4">Movies in Library</h2>
+
+      <div
+        id="movie-list"
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"
+      >
+        <!-- Movies will appear here -->
+      </div>
+    </main>
+
+    <script>
+      const movieList = document.getElementById("movie-list");
+      const movieForm = document.getElementById("movie-form");
+
+      async function fetchMovies() {
+        try {
+          const res = await fetch("/api/movies");
+          if (!res.ok) throw new Error("Failed to fetch movies");
+          const movies = await res.json();
+
+          movieList.innerHTML = "";
+
+          movies.forEach((movie) => {
+            const card = document.createElement("div");
+            card.className =
+              "bg-white text-black shadow-md rounded-lg p-6 border border-gray-200 hover:shadow-lg transition";
+
+            card.innerHTML = `
+              <h2 class="text-xl font-semibold text-gray-800 mb-2">${movie.title}</h2>
+              <p class="text-gray-700">Directed by <span class="font-medium">${movie.director}</span></p>
+              <p class="text-sm text-gray-500">Released: ${movie.year}</p>
+            `;
+
+            movieList.appendChild(card);
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      movieForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById("title").value;
+        const director = document.getElementById("director").value;
+        const year = document.getElementById("year").value;
+
+        const movie = { title, director, year: parseInt(year) };
+
+        try {
+          const res = await fetch("/api/movies", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(movie),
+          });
+
+          if (!res.ok) throw new Error("Failed to add movie");
+
+          movieForm.reset();
+          fetchMovies();
+        } catch (error) {
+          console.error("Error adding movie:", error);
+        }
+      });
+
+      fetchMovies();
+    </script>
+  </body>
+</html>
